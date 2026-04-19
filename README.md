@@ -21,5 +21,11 @@ A multimodal AI-based communication system designed for differently-abled users.
 - deep-translator
 - pyserial
 - JavaScript (Vanilla)
+## 🔹 How to Run
 
+```bash
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
 ## 🔹 Project Structure
