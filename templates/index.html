@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Comm System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+  <div class="logo">AI<span>//</span>COMM</div>
+  <a href="/touch" style="font-family:monospace;font-size:11px;letter-spacing:0.1em;color:#666;border:1px solid #333;padding:5px 12px;border-radius:4px;text-decoration:none;text-transform:uppercase;">♿ Accessibility Mode</a>
+  <div class="status-pill">
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">Ready</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Left Panel: STT (for Deaf users) ── -->
+  <section class="panel">
+    <div class="panel-label">Mode 01</div>
+    <h2 class="panel-title">Speech → Text</h2>
+    <p style="color:var(--muted);font-size:13px;">
+      Record audio — subtitles appear in English and Hindi simultaneously.
+    </p>
+
+    <!-- English subtitle box -->
+    <div class="subtitle-label">
+      <span>EN</span> English
+    </div>
+    <div class="transcript-box" id="transcript" data-id="subtitle-en">
+      <div class="pulse-ring" id="pulse-ring"></div>
+      <p class="placeholder">English subtitles will appear here…</p>
+    </div>
+
+    <!-- Hindi subtitle box -->
+    <div class="subtitle-label hindi">
+      <span>हि</span> हिन्दी
+    </div>
+    <div class="transcript-box transcript-box--hindi" id="transcript-hi" data-id="subtitle-hi">
+      <p class="placeholder">हिन्दी उपशीर्षक यहाँ दिखेगा…</p>
+    </div>
+
+    <!-- Lang selector -->
+    <div class="lang-row">
+      <span style="color:var(--muted);font-size:12px;font-family:var(--mono);">SPEAK IN</span>
+      <label class="lang-opt">
+        <input type="radio" name="lang" value="en-IN" checked> English
+      </label>
+      <label class="lang-opt">
+        <input type="radio" name="lang" value="hi-IN"> Hindi
+      </label>
+    </div>
+
+    <button class="btn btn-record" id="btn-record">🎙 Start Recording</button>
+    <button class="btn btn-clear" id="btn-clear-stt">Clear Subtitles</button>
+  </section>
+
+  <!-- ── Right Panel: TTS (for Mute users) ── -->
+  <section class="panel">
+    <div class="panel-label">Mode 02</div>
+    <h2 class="panel-title">Text → Speech</h2>
+    <p style="color:var(--muted);font-size:13px;">
+      Type a message and play it aloud. Use <kbd style="background:var(--surface);border:1px solid var(--border);padding:1px 6px;border-radius:3px;font-family:var(--mono);font-size:11px;">Ctrl+↵</kbd> to speak.
+    </p>
+
+    <textarea
+      class="tts-input"
+      id="tts-input"
+      placeholder="Type something to say…"
+      maxlength="500"
+    ></textarea>
+
+    <div class="char-count" id="char-count">0 / 500</div>
+
+    <button class="btn btn-speak" id="btn-speak" disabled>🔊 Speak Text</button>
+
+    <div class="panel-label" style="margin-top:8px;">Recent</div>
+    <div class="tts-history" id="tts-history"></div>
+    <button class="btn btn-clear" id="btn-clear-tts">Clear History</button>
+  </section>
+
+</main>
+
+<footer>
+  <span>AI COMM SYSTEM v1.0</span>
+  <span>STT · TTS · HARDWARE READY</span>
+</footer>
+
+<div id="toast"></div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

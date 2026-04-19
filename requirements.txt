@@ -1,0 +1,21 @@
+# ── Web framework ────────────────────────────────────────
+flask>=3.0.0
+flask-compress>=1.14        # optional: gzip response compression
+
+# ── Speech to Text ───────────────────────────────────────
+SpeechRecognition>=3.10.0  # Google STT via recognize_google()
+pydub>=0.25.1               # audio format handling (needs ffmpeg binary)
+# ffmpeg must be installed separately:
+#   Windows : winget install ffmpeg
+#   Linux   : sudo apt install ffmpeg
+#   Mac     : brew install ffmpeg
+
+# ── Text to Speech ───────────────────────────────────────
+edge-tts>=6.1.9             # primary: Microsoft neural voices (free)
+gTTS>=2.5.0                 # fallback: Google TTS
+
+# ── Translation ──────────────────────────────────────────
+googletrans==4.0.0rc1       # Hindi ↔ English (pin to rc1 — newer breaks)
+
+# ── Hardware ─────────────────────────────────────────────
+pyserial>=3.5               # Arduino serial communication (optional)

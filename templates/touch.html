@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Accessibility Mode — AI Comm</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #000000;
+      --surface:  #111111;
+      --border:   #333333;
+      --text:     #ffffff;
+      --muted:    #888888;
+      --accent:   #ffffff;
+      --btn-min:  140px;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+    }
+    .back-link:hover { color: var(--text); border-color: var(--text); }
+
+    /* ── Feedback bar ── */
+    #feedback {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      min-height: 58px;
+      border-bottom: 1px solid var(--border);
+      transition: opacity 0.3s;
+    }
+
+    /* ── Button grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(var(--btn-min), 1fr));
+      gap: 12px;
+      padding: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ── Communication button ── */
+    .comm-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: var(--btn-min);
+      min-width: var(--btn-min);
+      padding: 16px 8px;
+      border: 3px solid;
+      border-radius: 12px;
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .comm-btn:active {
+      transform: scale(0.93);
+    }
+
+    /* Ripple on press */
+    .comm-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .comm-btn.pressed::after { opacity: 0.15; }
+
+    .comm-btn .icon {
+      font-size: 52px;
+      line-height: 1;
+    }
+
+    .comm-btn .label {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Per-button color themes (high contrast) ── */
+    .btn-yes    { border-color: #00cc66; color: #00cc66; }
+    .btn-yes.pressed, .btn-yes:active { background: #003311; }
+
+    .btn-no     { border-color: #ff3333; color: #ff3333; }
+    .btn-no.pressed, .btn-no:active { background: #330000; }
+
+    .btn-help   { border-color: #ffaa00; color: #ffaa00; }
+    .btn-help.pressed, .btn-help:active { background: #332200; }
+
+    .btn-water  { border-color: #44aaff; color: #44aaff; }
+    .btn-water.pressed, .btn-water:active { background: #001133; }
+
+    .btn-pain   { border-color: #ff44aa; color: #ff44aa; }
+    .btn-pain.pressed, .btn-pain:active { background: #330011; }
+
+    .btn-hello  { border-color: #aaffaa; color: #aaffaa; }
+    .btn-hello.pressed, .btn-hello:active { background: #002200; }
+
+    .btn-stop   { border-color: #ffffff; color: #ffffff; }
+    .btn-stop.pressed, .btn-stop:active { background: #222222; }
+
+    /* ── Spinner overlay (while TTS loads) ── */
+    .comm-btn .spinner {
+      display: none;
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 14px; height: 14px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .comm-btn.loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Status bar ── */
+    #status-bar {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>♿ Accessibility Mode</h1>
+  <a class="back-link" href="/">← Main</a>
+</header>
+
+<div id="feedback">—</div>
+
+<div class="grid">
+
+  <button class="comm-btn btn-yes"
+          data-word="Yes"
+          data-signal="double"
+          aria-label="Yes">
+    <div class="spinner"></div>
+    <span class="icon">✅</span>
+    <span class="label">YES</span>
+  </button>
+
+  <button class="comm-btn btn-no"
+          data-word="No"
+          data-signal="long"
+          aria-label="No">
+    <div class="spinner"></div>
+    <span class="icon">🚫</span>
+    <span class="label">NO</span>
+  </button>
+
+  <button class="comm-btn btn-help"
+          data-word="Help me please"
+          data-signal="long"
+          aria-label="Help">
+    <div class="spinner"></div>
+    <span class="icon">🆘</span>
+    <span class="label">HELP</span>
+  </button>
+
+  <button class="comm-btn btn-water"
+          data-word="I need water"
+          data-signal="short"
+          aria-label="Water">
+    <div class="spinner"></div>
+    <span class="icon">💧</span>
+    <span class="label">WATER</span>
+  </button>
+
+  <button class="comm-btn btn-pain"
+          data-word="I am in pain"
+          data-signal="long"
+          aria-label="Pain">
+    <div class="spinner"></div>
+    <span class="icon">😣</span>
+    <span class="label">PAIN</span>
+  </button>
+
+  <button class="comm-btn btn-hello"
+          data-word="Hello"
+          data-signal="short"
+          aria-label="Hello">
+    <div class="spinner"></div>
+    <span class="icon">👋</span>
+    <span class="label">HELLO</span>
+  </button>
+
+  <button class="comm-btn btn-stop"
+          data-word="Stop"
+          data-signal="double"
+          aria-label="Stop">
+    <div class="spinner"></div>
+    <span class="icon">✋</span>
+    <span class="label">STOP</span>
+  </button>
+
+</div>
+
+<div id="status-bar">TAP A BUTTON TO COMMUNICATE</div>
+
+<script>
+  const feedback  = document.getElementById('feedback');
+  const statusBar = document.getElementById('status-bar');
+
+  document.querySelectorAll('.comm-btn').forEach(btn => {
+    btn.addEventListener('click', () => handlePress(btn));
+
+    // Keyboard support
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') handlePress(btn);
+    });
+  });
+
+  async function handlePress(btn) {
+    const word   = btn.dataset.word;
+    const signal = btn.dataset.signal;
+
+    // Visual feedback
+    btn.classList.add('pressed', 'loading');
+    feedback.textContent = word.toUpperCase();
+
+    // Fire both requests in parallel
+    await Promise.allSettled([
+      triggerHaptic(signal),
+      speakWord(word, btn),
+    ]);
+
+    btn.classList.remove('pressed', 'loading');
+    statusBar.textContent = `LAST: "${word.toUpperCase()}" — ${signal.toUpperCase()} SIGNAL`;
+  }
+
+  // ── POST to /haptic ──────────────────────────────────
+  async function triggerHaptic(signal) {
+    try {
+      await fetch('/api/haptic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ signal }),
+      });
+    } catch {
+      // Haptic failure is non-critical — silent
+    }
+  }
+
+  // ── POST to /api/tts, play audio ─────────────────────
+  async function speakWord(text, btn) {
+    try {
+      const res  = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, lang: 'en' }),
+      });
+      const data = await res.json();
+
+      if (data.audio_b64) {
+        const audio = new Audio(`data:audio/mp3;base64,${data.audio_b64}`);
+        await audio.play().catch(() => {});
+      }
+    } catch {
+      // TTS failure — don't crash the page
+    }
+  }
+</script>
+
+</body>
+</html>
